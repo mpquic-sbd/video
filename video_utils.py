@@ -65,9 +65,18 @@ def get_fps(quality):
 def get_id(quality):
     return quality.split(" ")[0].split(",")[0]
 
-def split_video(seg_sec_duration):
+def split_video(seg_sec_duration, fmpd = "output_dash.mpd", isSegmentTemplate = False):
     qualities = get_video_qualities()
-    cmd = ['MP4Box', '-dash', int(seg_sec_duration) * 1000, '-segment-name', "'segment_$RepresentationID$_'", '-mpd-refresh', seg_sec_duration]
+    cmd = [
+        'MP4Box',
+        '-dash', int(seg_sec_duration) * 1000,
+        '-segment-name', "'segment_$RepresentationID$_$Number$'",
+        '-mpd-refresh', seg_sec_duration
+        ]
+
+    if isSegmentTemplate is True:
+        cmd.append('-url-template')
+
     for quality in qualities:
         fps = get_fps(quality['Quality'])
         output_video = f"video_{quality['Quality'].replace(':', '').replace(',', '').replace(' ', '_')}.mp4"
@@ -75,13 +84,8 @@ def split_video(seg_sec_duration):
         cmd.append(f'-fps {fps}')
         cmd.append(f'{output_video}#video:id={id}')
 
-    cmd.append(f"-out output_dash.mpd")
+    cmd.append(f"-out {fmpd}")
     run_cmd(cmd)
-    run_cmd(["python", "video_sara_mpd.py"])
-    dir_name = f"{seg_sec_duration}s"
-    run_cmd(["mkdir", dir_name])
-    run_cmd(["mv", "segment_*", dir_name])
-    run_cmd(["mv", "output_dash*", dir_name])
 
 def process_video_qualities(input_file):
     qualities = get_video_qualities()

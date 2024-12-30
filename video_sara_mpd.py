@@ -38,10 +38,7 @@ def parseXML(xmlfile, files):
     tree = ET.parse(xmlfile)
     root = tree.getroot()
 
-    SegmentTemplate = root.find('{urn:mpeg:dash:schema:mpd:2011}SegmentTemplate')
-    s = None
-    if SegmentTemplate is not None:
-       s = [s for s in SegmentTemplate.iter[0] ]
+    s = [s for s in root.iter('{urn:mpeg:dash:schema:mpd:2011}SegmentTemplate')][0]
 
     for child in root.iter():
         if child.tag == '{urn:mpeg:dash:schema:mpd:2011}AdaptationSet':
@@ -65,9 +62,13 @@ def parseXML(xmlfile, files):
     with open('output_dash2.mpd', 'wb') as f:
         ET.ElementTree(root).write(f,  encoding='utf-8', xml_declaration=True)
 
-def main():
+def main(fmpd):
     files = get_files('.')
-    newsitems = parseXML('output_dash.mpd', files)
+    newsitems = parseXML(fmpd, files)
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) != 2:
+        print("Usage: python3 ", sys.argv[0], " <mpd file with SegmentTemplate>")
+    else:
+        main(sys.argv[1])

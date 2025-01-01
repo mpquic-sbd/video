@@ -12,11 +12,11 @@ def main(seg_sec_duration):
     split_video(seg_sec_duration, "output_dash_template.mpd", True)
     run_cmd(["rm", "*.m4s"])
     split_video(seg_sec_duration, "output_dash.mpd", False)
-
     run_cmd(["python3", "video_sara_mpd.py", "output_dash_template.mpd"])
     dir_name = f"{seg_sec_duration}s"
     run_cmd(["mkdir", dir_name])
     run_cmd(["mv", "segment_*", dir_name])
+    run_cmd(["rm", "output_dash_template*"])
     run_cmd(["mv", "output_dash*", dir_name])
 
     print("Video splitting completed for all qualities.")

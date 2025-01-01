@@ -71,7 +71,8 @@ def split_video(seg_sec_duration, fmpd = "output_dash.mpd", isSegmentTemplate = 
         'MP4Box',
         '-dash', int(seg_sec_duration) * 1000,
         '-segment-name', "'segment_$RepresentationID$_$Number$'",
-        '-mpd-refresh', seg_sec_duration
+        '-mpd-refresh', seg_sec_duration,
+	'-bs-switching', 'no'
         ]
 
     if isSegmentTemplate is True:

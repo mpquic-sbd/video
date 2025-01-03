@@ -2,7 +2,7 @@ import subprocess
 import os
 import re
 
-debug_dont_run = False
+debub_dont_run = False
 
 def get_video_qualities():
     return [
@@ -22,7 +22,7 @@ def get_video_qualities():
 def run_cmd(command):
     cmd = ' '.join(str(c) for c in command)
     print(cmd)
-    if debug_dont_run is True:
+    if debub_dont_run is True:
        return
     result = subprocess.run(cmd, shell=True, check=True, universal_newlines=False)
     print(f"Command output: {result.stdout}")
